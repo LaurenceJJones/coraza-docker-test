@@ -1,0 +1,13 @@
+# This file is based on https://github.com/WebGoat/WebGoat/blob/develop/docker-compose.yml
+
+version: '3.9'
+
+services:
+  backend:
+    image: vulnerables/web-dvwa
+  proxy:
+    build: ./waf
+    depends_on:
+      - backend
+    ports:
+      - 127.0.0.1:80:80
