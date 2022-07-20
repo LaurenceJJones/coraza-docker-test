@@ -34,7 +34,10 @@ func NewProxy(targetHost string) (*httputil.ReverseProxy, error) {
 func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tx := waf.NewTransaction()
-		defer tx.ProcessLogging()
+		defer func(){
+			tx.ProcessLogging()
+			tx.Clean()
+		}()
 		if it, _ := tx.ProcessRequest(r); it != nil {
 			fmt.Printf("Transaction was interrupted with status %d\n", it.Status)
 			fmt.Printf("Rule blocked: %d\n", it.RuleID)
